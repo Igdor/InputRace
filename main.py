@@ -50,7 +50,7 @@ def boost():
         used_words.append(word)
         road.coords(car, [100+(distance*2), 120])
         road.tag_raise(car)
-        if distance >= 500 or word == "win":
+        if distance >= 500:
             end_game()
         else:
             label_distance.configure(text=str(round(distance, 2)))
