@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefm
 
 used_words = []
 
-
 def start_game():
     btn_start.destroy()
     label_tutorial.destroy()
@@ -24,6 +23,8 @@ def reaction(event):
         return "Congratulations! You finished the race."
     elif event == "zero":
         return "This input doesn't seem\r to have any power..."
+    elif event == "short":
+        return "Your input is too short!"
     else:
         return "You got boost!"
 
@@ -41,9 +42,14 @@ def boost():
     global distance
     global label_distance
     global label_last_boost
+    if len(word) < 3:
+        label_reaction.configure(text=reaction("short"))
+        window.update()
+        return None
     if word in used_words:
         label_reaction.configure(text=reaction("used"))
         window.update()
+        return None
     else:
         added_distance = GameLogic.boost_calculator(word, used_words)
         distance += added_distance
@@ -62,11 +68,19 @@ def boost():
                 label_reaction.configure(text=reaction("boost"))
 
 
+def press_enter(event):
+    boost()
+
+
 btn_start = tk.Button(window, text="START", bg="green", command=start_game, height=3, width=22, font=("Helvetica", 16))
 btn_start.place(x=540, y=450)
 
 
 btn_boost = tk.Button(frame_input, text="BOOST!", bg="green", command=boost, height=2, width=20, font=("Helvetica", 10))
 btn_boost.grid(row=2, column=0, columnspan=2, padx=40, pady=10)
+window.bind("<Return>", press_enter)
+
+btn_exit = tk.Button(window, text="EXIT", bg="grey", command=exit,  height=2, width=6, font=("Helvetica", 10))
+btn_exit.place(x=100, y=50)
 
 window.mainloop()

@@ -1,15 +1,15 @@
-import urllib
-import requests
-import re
 import logging
 
+from urllib import parse
+from requests.exceptions import RequestException
+from re import search, sub
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 
 
 def parser(word):
     """Searches the word in google and returns approximate number of results"""
-    query = urllib.parse.quote_plus(word)
+    query = parse.quote_plus(word)
     try:
         session = HTMLSession()
         response = session.get("https://www.google.com/search?q=" + query + "&hl=en")
@@ -20,19 +20,19 @@ def parser(word):
             logging.warning("bad HTML loaded for word " + word)
             return parser(word)  # searches with requests_html sometimes fail to return number of results, prob because
             # of Google anti-parser measures, so this loop was added as a countermeasure
-        word_popularity = re.search("About (.*?) results", stats.text).group(1)
-        return int(re.sub(",", "", word_popularity))
+        word_popularity = search("About (.*?) results", stats.text).group(1)
+        return int(sub(",", "", word_popularity))
 
-    except requests.exceptions.RequestException as e:
+    except RequestException as e:
         logging.error(e)
 
 
 def boost_calculator(word, used_words):
-    if len(word) < 3:
-        return 0
+    """Calculates the boost value of a given word based on 3 factors: number of search results from Google, word length
+     and number of appearences inside previous queries"""
     word_value = parser(word)
     match word_value:
-        case _ if 10000 < word_value <= 100000:
+        case _ if 20000 < word_value <= 100000:
             boost = 50 - (word_value / 10000)
         case _ if 100000 < word_value <= 1000000:
             boost = 40 - (word_value / 100000)
@@ -57,7 +57,6 @@ def boost_calculator(word, used_words):
     for used_word in used_words:
         if used_word.lower() in word.lower() or word.lower() in used_word.lower() and used_factor >= 0.2:
             counter += 1
-    print(counter)
     used_factor = used_factor / counter
     logging.info("Input " + word + " stats: word value: " + str(boost) + ", length_factor: " + str(length_factor) + ", used_factor: " + str(used_factor))
     return round((boost * length_factor * used_factor), 2)
