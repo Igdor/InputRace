@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefm
 
 used_words = []
 
+
 def start_game():
     btn_start.destroy()
     label_tutorial.destroy()
@@ -42,12 +43,16 @@ def boost():
     global distance
     global label_distance
     global label_last_boost
+    label_last_boost.configure(text="calculating...", font=("Helvetica", 10))
+    window.update()
     if len(word) < 3:
         label_reaction.configure(text=reaction("short"))
+        label_last_boost.configure(text="+0", font=("Helvetica", 18))
         window.update()
         return None
     if word in used_words:
         label_reaction.configure(text=reaction("used"))
+        label_last_boost.configure(text="+0", font=("Helvetica", 18))
         window.update()
         return None
     else:
@@ -60,7 +65,7 @@ def boost():
             end_game()
         else:
             label_distance.configure(text=str(round(distance, 2)))
-            label_last_boost.configure(text="+" + str(round(added_distance, 2)))
+            label_last_boost.configure(text="+" + str(round(added_distance, 2)), font=("Helvetica", 16))
             window.update()
             if added_distance == 0:
                 label_reaction.configure(text=reaction("zero"))
@@ -80,7 +85,7 @@ btn_boost = tk.Button(frame_input, text="BOOST!", bg="green", command=boost, hei
 btn_boost.grid(row=2, column=0, columnspan=2, padx=40, pady=10)
 window.bind("<Return>", press_enter)
 
-btn_exit = tk.Button(window, text="EXIT", bg="grey", command=exit,  height=2, width=6, font=("Helvetica", 10))
+btn_exit = tk.Button(window, text="EXIT", bg="grey", command=window.destroy,  height=2, width=6, font=("Helvetica", 10))
 btn_exit.place(x=100, y=50)
 
 window.mainloop()
