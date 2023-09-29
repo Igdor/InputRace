@@ -68,7 +68,7 @@ label_last_boost = tk.Label(frame_last_boost, text="+0", font=("Helvetica", 18),
 label_last_boost.grid(row=1, column=0, columnspan=2)
 
 
-frame_input = tk.Frame(frame_interface, width=400, height=200, relief=tk.GROOVE, borderwidth=5, bg=main_color)
+frame_input = tk.Frame(frame_interface, width=400, height=250, relief=tk.GROOVE, borderwidth=5, bg=main_color)
 frame_input.grid(row=0, column=1)
 frame_input.grid_propagate(False)
 frame_input.columnconfigure(0, weight=1)

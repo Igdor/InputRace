@@ -35,10 +35,13 @@ def end_game():
     frame_winscore.place(x=520, y=480)
     label_winscore.configure(text=str(GameLogic.win_score(used_words)))
     window.update()
-    logging.info("Game ended with score " + str(GameLogic.win_score(used_words)) + ". Used words: " + str(used_words))
+    logging.info("Game ended with score " + str(GameLogic.win_score(used_words)) + ". Used words: " + str(used_words) +
+                 " Repeat counter: " + str(GameLogic.repeat_counter))
+
 
 
 def boost():
+    btn_boost.configure(relief="sunken", state="disabled", bg='grey')
     word = str(field_input.get())
     global distance
     global label_distance
@@ -48,11 +51,13 @@ def boost():
     if len(word) < 3:
         label_reaction.configure(text=reaction("short"))
         label_last_boost.configure(text="+0", font=("Helvetica", 18))
+        btn_boost.configure(relief="raised", state="normal", bg='green')
         window.update()
         return None
     if word in used_words:
         label_reaction.configure(text=reaction("used"))
         label_last_boost.configure(text="+0", font=("Helvetica", 18))
+        btn_boost.configure(relief="raised", state="normal", bg='green')
         window.update()
         return None
     else:
@@ -71,6 +76,7 @@ def boost():
                 label_reaction.configure(text=reaction("zero"))
             else:
                 label_reaction.configure(text=reaction("boost"))
+            btn_boost.configure(relief="raised", state="normal", bg='green')
 
 
 def press_enter(event):
